@@ -5,7 +5,6 @@ const { validationResult } = require("express-validator");
 const { Op } = require("sequelize"); //Módulo de operadores sequelize
 
 //Models
-const productsData = require("../database/produtos.json");
 const {Produto, Imagem} = require("../models");
 
 //Funções externas para o controller
@@ -30,6 +29,15 @@ function deleteImages(imagesPaths) {
 }
 
 const productController = {
+  async sendAll(req, res){
+    try {
+      const todosProdutos = await Produto.findAll({raw:true});
+      res.status(200).json(todosProdutos);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  },
+  
   async sendById(req, res) {
     const id_produto = Number(req.params.id);
     
@@ -40,7 +48,7 @@ const productController = {
         raw: true,
       });
 
-      if (targetProduct === null) res.status(404).send("Produto não encontrado");
+      if (targetProduct === null) return res.status(404).json({msg:"Produto não encontrado"});
 
       //Faz o query das imagens
       const imagens = await Imagem.findAll({
@@ -48,11 +56,12 @@ const productController = {
         raw: true,
       });
       targetProduct.Imagem = imagens;
+
       targetProduct.preco = Number(targetProduct.preco);
 
-      res.status(200).json(targetProduct);
+      return res.status(200).json(targetProduct);
     } catch (error) {
-      res.status(400).json({ error });
+      return res.status(400).json({ error });
     }
   },
 
@@ -91,7 +100,7 @@ const productController = {
 
     const dep = departNums.get(req.params.dep);
 
-    if (!dep) res.status(404).render("404"); //Caso o parâmetro da rota não seja um departamento responde com a 404
+    if (!dep) res.status(404).send("Nenhum departamento correspondente encontrado"); //Caso o parâmetro da rota não seja um departamento responde com a 404
 
     //Fazer o query dos produtos
     try {
@@ -121,8 +130,9 @@ const productController = {
       }
 
       //Verifica se achou algum produto, caso contrário manda pra 404
-      if (produtos.length == 0)
-        throw new Error("Nenhum produto encontrado nesse departamento");
+      if (produtos.length == 0) {
+        return res.status(404).send("Nenhum produto encontrado");
+      }
 
       res.status(200).json(produtos);
     } catch (error) {
@@ -132,11 +142,13 @@ const productController = {
   },
 
   async searchProducts(req, res) {
+
     let search = req.query.keywords
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^\w\s]/g, "");
+
 
     try {
       const productsToSearch = await Produto.findAll({
@@ -148,7 +160,7 @@ const productController = {
         raw: true,
       });
 
-      if (productsToSearch.length === 0) res.status(404).render("404");
+      if (productsToSearch.length === 0) return res.status(404).send("Nenhum produto encontrado");
 
       res.status(200).json(productsToSearch);
     } catch (error) {

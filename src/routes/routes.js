@@ -24,6 +24,7 @@ router.get("/departamento/:dep/:subdep", productController.sendByDepartament);
 router.get("/produto/:id", productController.sendById);
 router.get("/enviarimagem/:id", productController.sendProductImage); // Envia img produto
 router.get("/busca", productController.searchProducts); //Barra de pesquisa
+router.get("/todosprodutos", productController.sendAll); //Temporário, só pra teste
 //Criar produto
 router.post(
   "/criarproduto",
@@ -55,8 +56,11 @@ router.get("/checar-autenticacao", auth, userController.checkAuth);
 
 // -=-=-=- Rotas do carrinho -=-=-=-
 //carrinho usuário
-router.post("/carrinho/:id", auth, carrinhoController.adicionaProduto);
-
+router.get("/produtos-usuario/:id", auth,carrinhoController.getUserProducts)
+router.post("/carrinho", auth, carrinhoController.adicionaProduto);
+router.put("/editarquantidadecarrinho/:id", carrinhoController.changeUserProductAmount);
+router.delete("/removeritemcarrinho/:id_usuario/:id_produto", carrinhoController.removeUserCartProduct);
+router.delete("/limparcarrinho/:id", carrinhoController.clearUserCart);
 // -=-=-=-  Rotas monteSeuPc -=-=-=-
 router.get("/monteseupc/:dep", monteSeuPcController.sendProductByDep);
 //Rota para enviar o produto

@@ -1,4 +1,3 @@
-const productsData = require("../database/produtos.json");
 
 const monteSeuPcController = {
 

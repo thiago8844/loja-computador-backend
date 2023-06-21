@@ -94,6 +94,7 @@ const userController = {
     const { email, senha } = req.body;
 
     try {
+      console.log("Recebeu o request")
       const user = await Usuario.findOne({
         where: {
           email: email,
@@ -114,13 +115,13 @@ const userController = {
           "batata"
         );
         //Cria o cookie com o token
-        res.cookie("token", token, { maxAge: 2592000000 });
-        res.status(200).json({token});
+        return res.status(200).json({token});
       } else {
-        return res.status(400).json({error: "Usuário ou senha incorretos"});
+        return res.status(401).json({error: "Usuário ou senha incorretos"});
       }
     } catch (error) {
-      return res.status(400).send(error);
+      console.error(error);
+      return res.status(400).json(error);
     }
     
   },
