@@ -13,6 +13,7 @@ const productController = require("../controllers/productController.js"); //Cont
 const monteSeuPcController = require("../controllers/monteSeuPcController.js");
 const carrinhoController = require("../controllers/carrinhoController.js");
 const userController = require("../controllers/userController.js");
+const orderController = require("../controllers/orderController.js"); //Controller dos pedidos
 
 //Código principal
 const router = express.Router();
@@ -49,10 +50,11 @@ router.delete("/produto/:id", auth, productController.deleteProduct);
 router.post("/cadastro", validarCadastro, userController.cadastro);
 //Rota Login
 router.post("/login", userController.login);
-//Rota LogOut
-router.get("/logout", auth, userController.logOut);
-//Rota valida usuário
-router.get("/checar-autenticacao", auth, userController.checkAuth);
+//Perfil do usuário
+router.get("/dadosusuario", auth, userController.sendUserData);
+router.post("/editardadosusuario", auth, userController.editUserData);
+router.get("/endereco", auth, userController.sendUserAddress);
+router.post("/editarendereco", auth, userController.editUserAddress);
 
 // -=-=-=- Rotas do carrinho -=-=-=-
 //carrinho usuário
@@ -61,6 +63,9 @@ router.post("/carrinho", auth, carrinhoController.adicionaProduto);
 router.put("/editarquantidadecarrinho/:id", carrinhoController.changeUserProductAmount);
 router.delete("/removeritemcarrinho/:id_usuario/:id_produto", carrinhoController.removeUserCartProduct);
 router.delete("/limparcarrinho/:id", carrinhoController.clearUserCart);
+
+// -=-=-=- Rotas pedido -=-=-=-
+router.get("/pedidos", orderController.getAllOrders);
 // -=-=-=-  Rotas monteSeuPc -=-=-=-
 router.get("/monteseupc/:dep", monteSeuPcController.sendProductByDep);
 //Rota para enviar o produto

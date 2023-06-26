@@ -39,6 +39,8 @@ module.exports = (sequelize, DataType) => {
   Produto.associate = (models) => {
     Produto.hasMany(models.Imagem, {foreignKey: "id_produto", as: "imagem"});
     Produto.hasMany(models.Item_carrinho, {foreignKey: "id_produto"});
+    
+    Produto.hasMany(models.Item_pedido, {foreignKey: "id_produto"});
 
     Produto.belongsTo(models.Departamento, {foreignKey: "id_departamento"});
     Produto.belongsTo(models.Sub_departamento, {foreignKey: "id_sub_departamento"});

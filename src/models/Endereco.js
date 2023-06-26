@@ -8,7 +8,8 @@ module.exports = (sequelize, DataType) => {
       autoIncrement: true
     },
     id_usuario: {
-      type: DataType.INTEGER
+      type: DataType.INTEGER,
+      allowNull: true
     },
     cep: {
       type: DataType.STRING(13)
@@ -29,7 +30,8 @@ module.exports = (sequelize, DataType) => {
       type: DataType.STRING(200)
     },
     complemento: {
-      type: DataType.STRING(200)
+      type: DataType.STRING(200),
+      allowNull: true
     }
   }, {
     tableName: "endereco",
@@ -37,7 +39,9 @@ module.exports = (sequelize, DataType) => {
   })
 
   Endereco.associate = (models) => {
-    Endereco.belongsTo(models.Usuario, {foreignKey: "id_usuario"})
+    Endereco.belongsTo(models.Usuario, {foreignKey: "id_usuario"});
+
+    Endereco.hasMany(models.Pedido, {foreignKey: "id_endereco"});
   }
 
   return Endereco;

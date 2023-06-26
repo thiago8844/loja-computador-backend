@@ -8,8 +8,9 @@ const { Carrinho, Item_carrinho, Produto, Imagem } = require("../models");
 const carrinho = {
   
   async adicionaProduto(req, res) {
-    const { user_id: id_usuario, id_produto } = req.body;
-
+    const { id: id_usuario } = jwt.decode(req.headers.authorization);
+    const { id_produto } = req.body;
+    console.log("ativou aqui");
     try {
       const userCarrinho = await Carrinho.findOne({
         where: { id_usuario },
@@ -52,7 +53,7 @@ const carrinho = {
   },
 
   async getUserProducts(req, res) {
-    const id_usuario = req.params.id;
+    const { id: id_usuario } = jwt.decode(req.headers.authorization);
 
     try {
       const userCarrinho = await Carrinho.findOne({
@@ -85,7 +86,7 @@ const carrinho = {
   },
 
   async changeUserProductAmount(req, res) {
-    const id_usuario = req.params.id;
+    const { id: id_usuario } = jwt.decode(req.headers.authorization);
     const id_produto = req.body.id_produto;
     const action = req.body.action;
     console.log(id_usuario, id_produto, action);
@@ -138,8 +139,8 @@ const carrinho = {
   },
 
   async removeUserCartProduct(req, res) {
-    const {id_usuario, id_produto} = req.params;
-
+    const {id_produto} = req.params;
+    const { id: id_usuario } = jwt.decode(req.headers.authorization);
     try {
       const userCarrinho = await Carrinho.findOne({
         where: { id_usuario },
@@ -168,7 +169,7 @@ const carrinho = {
   },
 
   async clearUserCart(req, res) {
-    const id_usuario = req.params.id;
+    const { id: id_usuario } = jwt.decode(req.headers.authorization);
 
     try {
       const userCarrinho = await Carrinho.findOne({
